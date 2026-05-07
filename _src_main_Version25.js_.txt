@@ -1,0 +1,63 @@
+// Import required modules
+import { Actor } from 'apify';
+import { CheerioCrawler, Dataset } from 'crawlee';
+import { parseISO, isWithinInterval } from 'date-fns';
+
+await Actor.init();
+
+const { stationUrls = [], dateRange = {}, maxRecordsPerStation = 100 } = (await Actor.getInput()) || {};
+const { startDate, endDate } = dateRange;
+
+// Function to validate if a date is within range
+const isDateInRange = (date, startDate, endDate) => {
+    const parsedDate = parseISO(date);
+    return isWithinInterval(parsedDate, { start: parseISO(startDate), end: parseISO(endDate) });
+};
+
+// Define the crawler
+const crawler = new CheerioCrawler({
+    maxConcurrency: 5,
+    async requestHandler({ $, request, log }) {
+        log.info(`Scraping weather station: ${request.url}`);
+
+        const stationName = $('h1.station-name').text().trim(); // Update selector for site structure
+        const records = $('.climate-record'); // Select rows of weather data
+
+        let recordsFetched = 0;
+        for (const record of records) {
+            if (recordsFetched >= maxRecordsPerStation) break;
+
+            const date = $(record).find('.record-date').text().trim(); // Update selector
+            if (!isDateInRange(date, startDate, endDate)) continue;
+
+            const temperature = parseFloat($(record).find('.record-temp').text().trim()); // Update selector
+            const precipitation = parseFloat($(record).find('.record-precip').text().trim()); // Update selector
+            const humidity = parseFloat($(record).find('.record-humidity').text().trim()); // Update selector
+            const windSpeed = parseFloat($(record).find('.record-wind').text().trim()); // Update selector
+
+            // Push climate data to dataset
+            await Dataset.pushData({
+                stationName,
+                date,
+                temperature,
+                precipitation,
+                humidity,
+                windSpeed,
+                url: request.url,
+            });
+
+            recordsFetched++;
+        }
+
+        log.info(`Fetched ${recordsFetched} records from weather station: ${stationName}`);
+    },
+});
+
+// Add URLs for the weather stations
+for (const stationUrl of stationUrls) {
+    crawler.addRequests([{ url: stationUrl }]);
+}
+
+await crawler.run();
+
+await Actor.exit();

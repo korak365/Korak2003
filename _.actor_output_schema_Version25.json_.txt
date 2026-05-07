@@ -1,0 +1,11 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Output Schema for Climate Data Aggregator",
+    "properties": {
+        "overview": {
+            "type": "string",
+            "title": "Climate Data Summary",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?view=overview"
+        }
+    }
+}

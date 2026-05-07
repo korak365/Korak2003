@@ -1,0 +1,75 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "stationName": {
+            "type": "string",
+            "title": "Weather Station Name"
+        },
+        "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+        },
+        "temperature": {
+            "type": "number",
+            "title": "Temperature (°C)"
+        },
+        "precipitation": {
+            "type": "number",
+            "title": "Precipitation (mm)"
+        },
+        "humidity": {
+            "type": "number",
+            "title": "Humidity (%)"
+        },
+        "windSpeed": {
+            "type": "number",
+            "title": "Wind Speed (km/h)"
+        },
+        "url": {
+            "type": "string",
+            "title": "Source URL"
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Climate Data Overview",
+            "transformation": {
+                "fields": ["stationName", "date", "temperature", "precipitation", "humidity", "windSpeed", "url"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "stationName": {
+                        "label": "Weather Station",
+                        "format": "text"
+                    },
+                    "date": {
+                        "label": "Date",
+                        "format": "date"
+                    },
+                    "temperature": {
+                        "label": "Temperature",
+                        "format": "number"
+                    },
+                    "precipitation": {
+                        "label": "Precipitation",
+                        "format": "number"
+                    },
+                    "humidity": {
+                        "label": "Humidity",
+                        "format": "number"
+                    },
+                    "windSpeed": {
+                        "label": "Wind Speed",
+                        "format": "number"
+                    },
+                    "url": {
+                        "label": "Source URL",
+                        "format": "link"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,40 @@
+{
+    "title": "Input Schema for Climate Data Aggregator",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "stationUrls": {
+            "title": "Weather Station URLs",
+            "type": "array",
+            "description": "URLs of regional weather station data feeds to scrape.",
+            "editor": "requestListSources",
+            "prefill": [
+                { "url": "https://example-weather-station.com/region1" }
+            ]
+        },
+        "dateRange": {
+            "title": "Date Range",
+            "type": "object",
+            "description": "Date range for historical climate data to scrape (format: YYYY-MM-DD).",
+            "properties": {
+                "startDate": {
+                    "type": "string",
+                    "title": "Start Date",
+                    "default": "2022-01-01"
+                },
+                "endDate": {
+                    "type": "string",
+                    "title": "End Date",
+                    "default": "2022-12-31"
+                }
+            }
+        },
+        "maxRecordsPerStation": {
+            "title": "Maximum Records per Weather Station",
+            "type": "integer",
+            "description": "Limit the number of climate records to fetch per station.",
+            "default": 100
+        }
+    },
+    "required": ["stationUrls", "dateRange"]
+}
